@@ -25,33 +25,44 @@ public class BootStrapData implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         Author eric = new Author("Eric", "Evans");
-        Book ddd = new Book("Domain Driven Design", "123123", "Harper Collins");
-        Publisher publisher = new Publisher("Harper Collins", "123 Main St", "Anytown", "WA", "12345");
+        Book ddd = new Book("Domain Driven Design", "123123");
+
+        Publisher publisher = new Publisher();
+        publisher.setName("Harper Collins");
+        publisher.setAddressLine("123 Main St");
+        publisher.setCity("Anytown");
+        publisher.setState("WA");
+        publisher.setZip("12345");
+
+
 
         eric.getBooks().add(ddd);
         ddd.getAuthors().add(eric);
-        publisher.getPublishedBooks().add(ddd);
 
         authorRepository.save(eric);
         bookRepository.save(ddd);
         publisherRepository.save(publisher);
 
+        publisher.getPublishedBooks().add(ddd);
+        ddd.setPublisher(publisher);
+
         Author rod = new Author("Rod", "Johnson");
-        Book noEJB = new Book("J2EE Development without EJB", "3939459459", "Worx");
-        Publisher publisher2 = new Publisher("Worx", "123 Main St", "Anytown", "WA", "12345");
+        Book noEJB = new Book("J2EE Development without EJB", "3939459459");
+
+        noEJB.setPublisher(publisher);
+        publisher.getPublishedBooks().add(noEJB);
 
         rod.getBooks().add(noEJB);
         noEJB.getAuthors().add(rod);
-        publisher2.getPublishedBooks().add(noEJB);
 
         authorRepository.save(rod);
         bookRepository.save(noEJB);
-        publisherRepository.save(publisher2);
+        publisherRepository.save(publisher);
 
         System.out.println("Started in Bootstrap");
         System.out.println("Number of Books: " + bookRepository.count());
         System.out.println("Number of Authors: " + authorRepository.count());
-        System.out.println("Number of Publishers: " + publisherRepository.count());
+        System.out.println("Publisher Number of Books: " + publisher.getPublishedBooks().size());
 
     }
 }
